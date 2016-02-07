@@ -88,7 +88,7 @@ run_synctex_forward(const char* synctex_fwd, const char* filename,
 static zathura_t*
 init_zathura(const char* config_dir, const char* data_dir,
              const char* cache_dir, const char* plugin_path, char** argv,
-			 char* synctex_editor, char* neovim_socket, Window embed)
+             char* synctex_editor, char* neovim_socket, Window embed)
 {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
@@ -156,6 +156,9 @@ main(int argc, char* argv[])
   gchar* plugin_path    = NULL;
   gchar* loglevel       = NULL;
   gchar* password       = NULL;
+#ifdef WITH_SYNCTEX
+  // NEOVIM
+  gchar* neovim_socket  = NULL;
   gchar* synctex_editor = NULL;
   gchar* synctex_fwd    = NULL;
   gchar* mode           = NULL;
