@@ -88,7 +88,7 @@ run_synctex_forward(const char* synctex_fwd, const char* filename,
 static zathura_t*
 init_zathura(const char* config_dir, const char* data_dir,
              const char* cache_dir, const char* plugin_path, char** argv,
-             char* synctex_editor, Window embed)
+			 char* synctex_editor, char* neovim_socket, Window embed)
 {
   /* create zathura session */
   zathura_t* zathura = zathura_create();
@@ -113,6 +113,30 @@ init_zathura(const char* config_dir, const char* data_dir,
     girara_setting_set(zathura->ui.session, "synctex-editor-command",
                        synctex_editor);
   }
+
+#ifdef WITH_SYNCTEX
+  // NEOVIM
+  int python_fd[2];
+  if (neovim_socket != NULL) {
+
+	  pid_t pid = 0;
+
+	  pipe(python_fd);
+	  pid = fork();
+
+	  if (pid == 0)
+	  {
+		  close(python_fd[1]);
+		  dup2(python_fd[0], 0);
+		  execlp("neovim-synctex-loop", "neovim-synctex-loop", neovim_socket , (char*) NULL);
+	  }
+	  else {
+		  close(python_fd[0]);
+	  }
+
+	  girara_setting_set(zathura->ui.session, "synctex-python-fd", &python_fd[1]);
+  }
+#endif
 
   return zathura;
 }
@@ -140,6 +164,8 @@ main(int argc, char* argv[])
   int    page_number    = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
 #ifdef WITH_SYNCTEX
   int    synctex_pid    = -1;
+  // NEOVIM
+  gchar* neovim_socket  = NULL;
 #endif
   Window embed          = 0;
 
@@ -155,6 +181,8 @@ main(int argc, char* argv[])
     { "log-level",              'l',  0, G_OPTION_ARG_STRING,   &loglevel,       _("Log level (debug, info, warning, error)"),           "level" },
     { "version",                'v',  0, G_OPTION_ARG_NONE,     &print_version,  _("Print version information"),                         NULL },
 #ifdef WITH_SYNCTEX
+	// neovim
+    { "neovim-socket",			'n',  0, G_OPTION_ARG_STRING,	&neovim_socket,	 _("Neovim socket name for Synctex"),					"path" },
     { "synctex-editor-command", 'x',  0, G_OPTION_ARG_STRING,   &synctex_editor, _("Synctex editor (forwarded to the synctex command)"), "cmd" },
     { "synctex-forward",        '\0', 0, G_OPTION_ARG_STRING,   &synctex_fwd,    _("Move to given synctex position"),                    "position" },
     { "synctex-pid",            '\0', 0, G_OPTION_ARG_INT,      &synctex_pid,    _("Highlight given position in the given process"),     "pid" },
@@ -270,7 +298,7 @@ main(int argc, char* argv[])
 
   /* Create zathura session */
   zathura_t* zathura = init_zathura(config_dir, data_dir, cache_dir,
-                                    plugin_path, argv, synctex_editor, embed);
+		  plugin_path, argv, synctex_editor, neovim_socket, embed);
   if (zathura == NULL) {
     girara_error("Could not initialize zathura.");
     ret = -1;
@@ -300,6 +328,15 @@ main(int argc, char* argv[])
 
   /* run zathura */
   gtk_main();
+
+#ifdef WITH_SYNCTEX
+  // NEOVIM
+  int fd = 0;
+  girara_setting_get(zathura->ui.session, "synctex-python-fd", &fd);
+  if (fd != 0) {
+	  write(fd, "exit\n", 5);
+  }
+#endif
 
   /* free zathura */
   zathura_free(zathura);
