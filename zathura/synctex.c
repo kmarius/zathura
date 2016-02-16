@@ -159,7 +159,7 @@ synctex_edit_msg(int fd, zathura_page_t* page, int x, int y)
   if (synctex_get_input_line_column(filename, zathura_page_get_index(page), x, y,
         &input_file, &line, &column) == true) {
 
-	char* forkstr = g_strdup_printf("edit +%d %s\n", line, input_file);
+	char* forkstr = g_strdup_printf("call Synctex_backward\('%s', %d\)\n", input_file, line);
 
 	write(fd, forkstr, strlen(forkstr));
 
