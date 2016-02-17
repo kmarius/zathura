@@ -128,7 +128,7 @@ init_zathura(const char* config_dir, const char* data_dir,
 	  {
 		  close(python_fd[1]);
 		  dup2(python_fd[0], 0);
-		  execlp("neovim-synctex-loop", "neovim-synctex-loop", neovim_socket , (char*) NULL);
+		  execlp("neovim-synctex", "neovim-synctex", neovim_socket , (char*) NULL);
 	  }
 	  else {
 		  close(python_fd[0]);
