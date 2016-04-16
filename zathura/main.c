@@ -337,7 +337,7 @@ main(int argc, char* argv[])
   int fd = 0;
   girara_setting_get(zathura->ui.session, "synctex-python-fd", &fd);
   if (fd != 0) {
-	  write(fd, "\n", 5);
+	  write(fd, "\n", 1);
   }
 #endif
 
