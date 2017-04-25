@@ -136,7 +136,6 @@ init_zathura(const char* config_dir, const char* data_dir,
 
 	  girara_setting_set(zathura->ui.session, "synctex-python-fd", &python_fd[1]);
   }
-#endif
 
   return zathura;
 }
@@ -165,7 +164,6 @@ main(int argc, char* argv[])
   bool   forkback       = false;
   bool   print_version  = false;
   int    page_number    = ZATHURA_PAGE_NUMBER_UNSPECIFIED;
-#ifdef WITH_SYNCTEX
   int    synctex_pid    = -1;
   // NEOVIM
   gchar* neovim_socket  = NULL;
