@@ -286,7 +286,7 @@ config_load_default(zathura_t* zathura)
   girara_setting_add(gsession, "synctex-editor-command", string_value, STRING,  false, _("Synctex editor command"), NULL, NULL);
   // NEOVIM
   int_value = 0;
-  girara_setting_add(gsession, "synctex-python-fd",  &int_value, INT,  false, _("internal file discriptor"), NULL, NULL);
+  girara_setting_add(gsession, "python-helper-fd",  &int_value, INT,  false, _("internal file discriptor"), NULL, NULL);
   bool_value = true;
   girara_setting_add(gsession, "dbus-service",           &bool_value,  BOOLEAN, false, _("Enable D-Bus service"), NULL, NULL);
   bool_value = false;

@@ -136,9 +136,9 @@ synctex_edit(const char* editor, zathura_page_t* page, int x, int y)
 
 // NEOVIM
 void
-synctex_edit_msg(int fd, zathura_page_t* page, int x, int y)
+synctex_edit_msgpack(int py_helper_fd, zathura_page_t* page, int x, int y)
 {
-  if (fd == 0 || page == NULL) {
+  if (py_helper_fd == 0 || page == NULL) {
     return;
   }
 
@@ -159,11 +159,11 @@ synctex_edit_msg(int fd, zathura_page_t* page, int x, int y)
   if (synctex_get_input_line_column(filename, zathura_page_get_index(page), x, y,
         &input_file, &line, &column) == true) {
 
-	char* forkstr = g_strdup_printf("call Synctex_backward\('%s', %d\)\n", input_file, line);
+    char* nvim_cmd = g_strdup_printf("call Synctex_backward\('%s', %d\)\n", input_file, line);
 
-	write(fd, forkstr, strlen(forkstr));
+    write(py_helper_fd, nvim_cmd, strlen(nvim_cmd));
 
-    g_free(forkstr);
+    g_free(nvim_cmd);
 
     g_free(input_file);
   }

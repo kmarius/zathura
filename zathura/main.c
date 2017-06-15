@@ -116,25 +116,25 @@ init_zathura(const char* config_dir, const char* data_dir,
 
 #ifdef WITH_SYNCTEX
   // NEOVIM
-  int python_fd[2];
+  int py_helper_fd[2];
   if (neovim_socket != NULL) {
 
 	  pid_t pid = 0;
 
-	  pipe(python_fd);
+	  pipe(py_helper_fd);
 	  pid = fork();
 
 	  if (pid == 0)
 	  {
-		  close(python_fd[1]);
-		  dup2(python_fd[0], 0);
+		  close(py_helper_fd[1]);
+		  dup2(py_helper_fd[0], 0);
 		  execlp("neovim-synctex", "neovim-synctex", neovim_socket , (char*) NULL);
 	  }
 	  else {
-		  close(python_fd[0]);
+		  close(py_helper_fd[0]);
 	  }
 
-	  girara_setting_set(zathura->ui.session, "synctex-python-fd", &python_fd[1]);
+	  girara_setting_set(zathura->ui.session, "python-helper-fd", &py_helper_fd[1]);
   }
 
   return zathura;
@@ -333,7 +333,7 @@ main(int argc, char* argv[])
 #ifdef WITH_SYNCTEX
   // NEOVIM
   int fd = 0;
-  girara_setting_get(zathura->ui.session, "synctex-python-fd", &fd);
+  girara_setting_get(zathura->ui.session, "python-helper-fd", &fd);
   if (fd != 0) {
 	  write(fd, "\n", 1);
   }

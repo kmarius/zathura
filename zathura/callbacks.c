@@ -752,10 +752,10 @@ cb_page_widget_scaled_button_release(ZathuraPage* page_widget, GdkEventButton* e
 
 #ifdef WITH_SYNCTEX
   // NEOVIM
-  int fd = 0;
-  girara_setting_get(zathura->ui.session, "synctex-python-fd", &fd);
-  if (fd != 0) {
-    synctex_edit_msg(fd, page, event->x, event->y);
+  int py_helper_fd = 0;
+  girara_setting_get(zathura->ui.session, "python-helper-fd", &py_helper_fd);
+  if (py_helper_fd != 0) {
+    synctex_edit_msgpack(py_helper_fd, page, event->x, event->y);
   }
 #endif
 
