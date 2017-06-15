@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+# use: neovim-synctex SOCKNAME
+
+import sys
+from neovim import attach
+
+def main():
+    sockpath=sys.argv[1]
+    try:
+        nvim = attach('socket', path=sockpath)
+    except FileNotFoundError:
+        print("Can't find unix socket {}.".format(sockpath))
+        sys.exit(1)
+
+    while True:
+        buf = sys.stdin.readline()
+        if buf != '\n':
+            nvim.command(buf, async=True)
+        else:
+            break
+
+if __name__ == '__main__':
+    main()
