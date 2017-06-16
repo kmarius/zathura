@@ -4,6 +4,13 @@ zathura - a document viewer
 zathura is a highly customizable and functional document viewer based on the
 girara user interface library and several document libraries.
 
+Use
+---
+Compile and install zathura.
+Place the python script `neovim-synctex` in a directory listed in $PATH.
+Copy `tex.vim` or its content into `~/.config/nvim/ftplugin/tex.vim`.
+Run zathura from within vim as `zathura -n SERVERNAME`, e.g. `exec 'silent !zathura -n ' . v:servername . ' somefile.pdf&'`. 
+
 Requirements
 ------------
 
