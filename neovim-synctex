@@ -2,10 +2,11 @@
 # use: neovim-synctex SOCKNAME
 
 import sys
+
 from neovim import attach
 
 def main():
-    sockpath=sys.argv[1]
+    sockpath = sys.argv[1]
     try:
         nvim = attach('socket', path=sockpath)
     except FileNotFoundError:
@@ -14,7 +15,7 @@ def main():
 
     while True:
         buf = sys.stdin.readline()
-        if buf != '\n':
+        if buf and buf != '\n':
             nvim.command(buf, async=True)
         else:
             break
