@@ -401,8 +401,8 @@ synctex_view(zathura_t* zathura, const char* input_file,
   unsigned int page = 0;
   girara_list_t* secondary_rects = NULL;
   girara_list_t* rectangles = synctex_rectangles_from_position(
-    zathura_document_get_path(zathura->document), input_file, line,
-    column, &page, &secondary_rects);
+  zathura_document_get_path(zathura->document), input_file, line,
+  column, &page, &secondary_rects);
 
   if (rectangles == NULL) {
     return false;
